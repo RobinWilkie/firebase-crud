@@ -7,16 +7,31 @@ import {Router} from '@angular/router';
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css']
 })
+
 export class LoginPageComponent {
+  public error: any;
 
-  constructor(public afService: AF, private router: Router) { }
+  constructor(public afService: AF, private router: Router) {}
 
-  login() {
+  loginWithGoogle() {
     this.afService.loginWithGoogle().then((data) => {
       // Send them to the homepage if they are logged in
+      console.log(data);
+      this.afService.addUserInfo();
       this.router.navigate(['']);
-    });
-
+    })
   }
 
+  loginWithEmail(event, email, password){
+    event.preventDefault();
+    this.afService.loginWithEmail(email, password).then(() => {
+      this.router.navigate(['']);
+    })
+      .catch((error: any) => {
+        if (error) {
+          this.error = error;
+          console.log(this.error);
+        }
+      });
+  }
 }
